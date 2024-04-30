@@ -1,0 +1,22 @@
+{
+  "name": "categories",
+  "version": "1.0.0",
+  "description": "This is going to be a web and mobile implementation of the game categories.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "categories"
+  ],
+  "author": "Daniel Flynn",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danwflynn/Categories.git"
+  },
+  "bugs": {
+    "url": "https://github.com/danwflynn/Categories/issues"
+  },
+  "homepage": "https://github.com/danwflynn/Categories#readme"
+}
