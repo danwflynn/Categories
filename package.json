@@ -18,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/danwflynn/Categories/issues"
   },
-  "homepage": "https://github.com/danwflynn/Categories#readme"
+  "homepage": "https://github.com/danwflynn/Categories#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
 }
