@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const countries = [
-  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", // Add more countries as needed
+  "afghanistan", "albania", "algeria", "andorra", "angola", "antigua and barbuda", // Add more countries as needed
   // You can find a complete list of countries online or use an API to fetch them dynamically
 ];
 
@@ -19,6 +19,7 @@ let timer;
 
 // Endpoint to start a single-player game with countries as the category
 app.post('/single-player/start', (req, res) => {
+  clearInterval(timer);
   startTimer();
   res.json({ message: 'Game started!' });
 });
@@ -36,15 +37,24 @@ app.post('/single-player/score', (req, res) => {
   res.json({ score });
 });
 
+// Endpoint to get the list of valid countries
+app.get('/countries', (req, res) => {
+  res.json({ countries });
+});
+
+
 // Helper function to start the timer
 function startTimer() {
-  timer = setInterval(() => {
+  timer = setTimeout(() => {
     clearInterval(timer);
   }, 60000); // 1 minute
 }
 
 // Helper function to calculate the score
 function calculateScore(countriesList) {
+  if (!Array.isArray(countriesList)) {
+    return 0; // Ensure countriesList is an array
+  }
   const validCountries = countries.filter(country => countriesList.includes(country));
   return validCountries.length;
 }

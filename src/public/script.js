@@ -11,20 +11,23 @@ document.addEventListener('DOMContentLoaded', () => {
   let timer;
   let remainingTime = 60; // Initial time in seconds
   let gameStarted = false;
+  let validCountries = [];
 
-  startBtn.addEventListener('click', () => {
-    startGame();
-  });
+  startBtn.addEventListener('click', startGame);
+  stopBtn.addEventListener('click', stopGame);
+  addCountryBtn.addEventListener('click', addCountry);
 
-  stopBtn.addEventListener('click', () => {
-    stopGame();
-  });
-
-  addCountryBtn.addEventListener('click', () => {
-    addCountry();
-  });
+  // Fetch the list of valid countries on page load
+  fetch('http://localhost:3000/countries')
+    .then(response => response.json())
+    .then(data => {
+      validCountries = data.countries.map(country => country.toLowerCase());
+    });
 
   function startGame() {
+    if (gameStarted) {
+      return;
+    }
     fetch('http://localhost:3000/single-player/start', {
       method: 'POST',
       headers: {
@@ -34,20 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(response => response.json())
     .then(data => {
       console.log(data.message);
-      remainingTime = 60; // Reset remainingTime to initial value
-      timerDisplay.textContent = remainingTime; // Update timer display
-      clearCountriesList(); // Clear countries list
-      updateScore(0); // Reset score display
-      timer = setInterval(() => {
-        remainingTime--;
-        timerDisplay.textContent = remainingTime; // Update timer display
-        if (remainingTime <= 0) {
-          clearInterval(timer);
-          stopGame();
-        }
-      }, 1000); // 1 second interval
+      resetGame();
+      startTimer();
       gameStarted = true;
-      countriesList.style.display = 'none'
+      countriesList.style.display = 'none';
     });
   }
 
@@ -64,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log(data.message);
       calculateScore();
       gameStarted = false;
-      countriesList.style.display = 'initial'
+      countriesList.style.display = 'initial';
     });
   }
 
@@ -72,14 +65,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!gameStarted) {
       return;
     }
-    const country = countryInput.value.trim();
+    const country = countryInput.value.trim().toLowerCase();
     if (country !== '') {
+      if (!validCountries.includes(country) || isDuplicate(country)) {
+        stopGame();
+        return;
+      }
       const countryItem = document.createElement('div');
-      countryItem.textContent = country;
+      countryItem.textContent = countryInput.value.trim();
       countriesList.appendChild(countryItem);
       countryInput.value = '';
       calculateScore();
     }
+  }
+
+  function isDuplicate(country) {
+    return Array.from(countriesList.children).some(item => item.textContent.toLowerCase() === country);
   }
 
   function clearCountriesList() {
@@ -91,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function calculateScore() {
-    const countries = Array.from(countriesList.children).map(country => country.textContent);
+    const countries = Array.from(countriesList.children).map(country => country.textContent.toLowerCase());
     fetch('http://localhost:3000/single-player/score', {
       method: 'POST',
       headers: {
@@ -103,5 +104,23 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       updateScore(data.score); // Update score display
     });
+  }
+
+  function resetGame() {
+    remainingTime = 60; // Reset remainingTime to initial value
+    timerDisplay.textContent = remainingTime; // Update timer display
+    clearCountriesList(); // Clear countries list
+    updateScore(0); // Reset score display
+  }
+
+  function startTimer() {
+    timer = setInterval(() => {
+      remainingTime--;
+      timerDisplay.textContent = remainingTime; // Update timer display
+      if (remainingTime <= 0) {
+        clearInterval(timer);
+        stopGame();
+      }
+    }, 1000); // 1 second interval
   }
 });
