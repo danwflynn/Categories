@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       const countryItem = document.createElement('div');
-      countryItem.textContent = countryInput.value.trim();
+      countryItem.textContent = country;
       countriesList.appendChild(countryItem);
       countryInput.value = '';
       calculateScore();

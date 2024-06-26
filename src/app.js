@@ -11,7 +11,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const countries = [
-  "afghanistan", "albania", "algeria", "andorra", "angola", "antigua and barbuda", // Add more countries as needed
+  "afghanistan", "albania", "algeria", "andorra", "angola", "antigua and barbuda",
+  // Add more countries as needed
   // You can find a complete list of countries online or use an API to fetch them dynamically
 ];
 
@@ -19,7 +20,7 @@ let timer;
 
 // Endpoint to start a single-player game with countries as the category
 app.post('/single-player/start', (req, res) => {
-  clearInterval(timer);
+  clearInterval(timer); // Clear any existing timer
   startTimer();
   res.json({ message: 'Game started!' });
 });
@@ -41,7 +42,6 @@ app.post('/single-player/score', (req, res) => {
 app.get('/countries', (req, res) => {
   res.json({ countries });
 });
-
 
 // Helper function to start the timer
 function startTimer() {
